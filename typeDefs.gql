@@ -1,0 +1,22 @@
+type User {
+  _id: ID!
+  username: String! @unique
+  email: String!
+  password: String!
+  avatar: String
+  joinDate: String
+}
+
+type Pic {
+  _id: ID!
+  title: String!
+  imageId: ID
+  ImageBase64: String!
+  imageFilename: String!
+  createdBy: User!
+  createdDate: String
+}
+
+type Query {
+  getPics: [Pic]
+}
