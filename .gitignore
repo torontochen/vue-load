@@ -1,4 +1,5 @@
 .DS_Store
+variables.env
 node_modules
 /dist
 

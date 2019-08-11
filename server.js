@@ -26,9 +26,9 @@ const Picture = require('./models/Picture')
 
 // Connect to mongodb databse
 mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useCreateIndex: true
-})
+    useNewUrlParser: true,
+    useCreateIndex: true
+  })
   .then(() => console.log('MongoDB is Connected'))
   .catch(err => console.error(err))
 
@@ -85,6 +85,6 @@ const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
 httpServer.listen(PORT, () => {
-  console.log(`Server ready at "http://local:${PORT}${server.graphqlPath}`)
+  console.log(`Server ready at http://local:${PORT}${server.graphqlPath}`)
   console.log(`Subscription ready at ws://localhost:${PORT}${server.subscriptionsPath}`)
 })
