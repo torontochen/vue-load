@@ -77,7 +77,10 @@
               </v-list-tile-content>
 
               <v-list-tile-action>
-                <v-btn icon ripple>
+                <v-btn
+                  icon
+                  ripple
+                >
                   <v-icon color="grey lighten-1">info</v-icon>
                 </v-btn>
               </v-list-tile-action>
@@ -89,21 +92,25 @@
     </v-layout>
 
     <!-- Download Image Dialog -->
-    <v-layout row align-center>
-      <v-dialog 
+    <v-layout
+      row
+      align-center
+    >
+      <v-dialog
         v-model="downloadDialog"
-        max-width="290">
+        max-width="290"
+      >
         <v-card class="pb-2">
           <v-card-title>
             <h5>File Is Ready to download, Click Link Below</h5>
           </v-card-title>
-          <p
-            class="text-xs-center text-md-center mb-4"><a
-            v-if="downloadImagepath"
-            target="_blank"
-            v-bind:href="'download/'+downloadImagePath"
-            @click.stop="downloadDialog=false"
-            download>{{downloadImagePath}}</a></p>
+          <p class="text-xs-center text-md-center mb-4"><a
+              v-if="downloadImagepath"
+              target="_blank"
+              v-bind:href="'download/'+downloadImagePath"
+              @click.stop="downloadDialog=false"
+              download
+            >{{downloadImagePath}}</a></p>
 
         </v-card>
       </v-dialog>
@@ -134,7 +141,7 @@ export default {
     },
     handleDeletePics() {},
     formatCreatedDate(date) {
-      return moment(new Date(date)).format("ll")
+      return moment(new Date(date)).format("ll");
     },
     downloadImage(imageFilename) {
       this.$store.dispatch();
