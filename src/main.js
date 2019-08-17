@@ -11,9 +11,11 @@ import { ApolloLink, Observable } from "apollo-link";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 import VueApollo from "vue-apollo";
+import Alert from "./components/Alert"
 
 // Register Global Component
 Vue.use(VueApollo);
+Vue.component("form-alert", Alert)
 
 // Set up request
 const request = operation => {
