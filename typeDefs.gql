@@ -17,6 +17,15 @@ type Pic {
   createdDate: String
 }
 
+type Token {
+  token: String!
+}
+
 type Query {
+  getCurrentUser: User!
   getPics: [Pic]
+}
+
+type Mutation {
+  signupUser(username: String!, password: String!, email: String!): Token
 }

@@ -1,105 +1,144 @@
 <template>
   <v-app style="background: #E8EAF6">
     <!-- Navbar -->
-      <v-toolbar fixed color="primary lighten-1" dark>
-        <!-- App Title -->
-          <v-toolbar-title class="hidden-xs-only">
-            <router-link to="/" tag="span" style="cursor: pointer">
-              Gallery
-            </router-link>
-          </v-toolbar-title>
+    <v-toolbar
+      fixed
+      color="primary lighten-1"
+      dark
+    >
+      <!-- App Title -->
+      <v-toolbar-title class="hidden-xs-only">
+        <router-link
+          to="/"
+          tag="span"
+          style="cursor: pointer"
+        >
+          Gallery
+        </router-link>
+      </v-toolbar-title>
 
-          <v-spacer></v-spacer>
-        <!-- Navbar Links -->
+      <v-spacer></v-spacer>
+      <!-- Navbar Links -->
 
-        <v-toolbar-items>
-          <v-layout v-if="!user">
-            <v-btn flat v-for="item in navItems" :key="item.title" :to="item.link">
-              <v-icon class="hidden-sm-only ma-1">{{item.icon}}</v-icon>
-              {{item.title}}
+      <v-toolbar-items>
+        <v-layout v-if="!user">
+          <v-btn
+            flat
+            v-for="item in navItems"
+            :key="item.title"
+            :to="item.link"
+          >
+            <v-icon class="hidden-sm-only ma-1">{{item.icon}}</v-icon>
+            {{item.title}}
+          </v-btn>
+        </v-layout>
+        <v-layout v-else>
+          <v-layout>
+            <v-btn>!Welcome ! {{user.name}}</v-btn>
+          </v-layout>
+          <v-layout>
+            <v-btn
+              flat
+              v-if="user"
+              to="/addpic"
+            >
+              <v-icon
+                left
+                class="hidden-sm-only ma-1"
+              >attachment</v-icon>
+              Add Picture
             </v-btn>
           </v-layout>
-          <v-layout v-else>
-            <v-layout>
-              <v-btn>!Welcome ! {{user.name}}</v-btn>
-            </v-layout>
-            <v-layout>
-              <v-btn flat v-if="user" to="/addpic">
-              <v-icon left class="hidden-sm-only ma-1">attachment</v-icon>  
-              Add Picture</v-btn>
-            </v-layout>
-            <v-layout>
-              <v-btn flat v-if="user" @click="handleSignoutUser">
-                <v-icon left class="hidden-sm-only ma-1">exit_to_app</v-icon>
-                Signout</v-btn>
-            </v-layout>
-
+          <v-layout>
+            <v-btn
+              flat
+              v-if="user"
+              @click="handleSignoutUser"
+            >
+              <v-icon
+                left
+                class="hidden-sm-only ma-1"
+              >exit_to_app</v-icon>
+              Signout
+            </v-btn>
           </v-layout>
-        </v-toolbar-items>
-      </v-toolbar>
+
+        </v-layout>
+      </v-toolbar-items>
+    </v-toolbar>
 
     <!-- Content -->
     <main>
       <v-container class="mt-4">
         <transition name='fade'>
-        <router-view/>
+          <router-view />
         </transition>
 
-         <!-- Auth Snackbar -->
-      <v-snackbar 
-        v-model="authSnackbar"
-        color="success"
-        :timeout="6000"
-        bottom
-        left>
-        <v-icon>check_circle</v-icon>
-        <h3>You are now Signed in!</h3>
-        <v-btn dark flat @click="authSnackbar=false">
-          Close
-        </v-btn>
-      </v-snackbar>
-
-      <!-- Auth Error Snackbar -->
-      <v-snackbar
-        v-if="authError"
-        v-model="authErrorSnackbar"
-        color="warning"
-        :timeout="6000"
-        bottom
-        left>
-        <v-icon class="mr-3">cancel</v-icon>
-        <h3>{{authError.message}}</h3>
-        <v-btn dark flat to="/signin">
-          Sign in
-        </v-btn>
+        <!-- Auth Snackbar -->
+        <v-snackbar
+          v-model="authSnackbar"
+          color="success"
+          :timeout="6000"
+          bottom
+          left
+        >
+          <v-icon>check_circle</v-icon>
+          <h3>You are now Signed in!</h3>
+          <v-btn
+            dark
+            flat
+            @click="authSnackbar=false"
+          >
+            Close
+          </v-btn>
         </v-snackbar>
-    </v-container>
-  </main>
+
+        <!-- Auth Error Snackbar -->
+        <v-snackbar
+          v-if="authError"
+          v-model="authErrorSnackbar"
+          color="warning"
+          :timeout="6000"
+          bottom
+          left
+        >
+          <v-icon class="mr-3">cancel</v-icon>
+          <h3>{{authError.message}}</h3>
+          <v-btn
+            dark
+            flat
+            to="/signin"
+          >
+            Sign in
+          </v-btn>
+        </v-snackbar>
+      </v-container>
+    </main>
   </v-app>
 </template>
 
 <script>
-import { mapGetters } from "vuex"
-import { setTimeout } from 'timers';
+import { mapGetters } from "vuex";
+import { setTimeout } from "timers";
 
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
       authSnackbar: false,
       authErrorSnackbar: false
-    }
+    };
   },
   watch: {
     user(newValue, oldValue) {
       if (oldValue == null) {
-        this.authSnackbar = true
+        this.authSnackbar = true;
       }
     },
     authError(value) {
       if (value !== null) {
-        this.authErrorSnackbar = true
-        setTimeout(() => (this.badgeAnimated = false), 1000)
+        this.authErrorSnackbar = true;
+        setTimeout(() => (this.badgeAnimated = false), 1000);
       }
     }
   },
@@ -107,19 +146,18 @@ export default {
     ...mapGetters(["authError", "user"]),
     navItems() {
       let items = [
-        {icon: "lock_open", title: "Sign In", link: "/signin"},
-        {icon: "create", title: "Sign Up", link: "/signup"},
-        
-      ]
-      return items
+        { icon: "lock_open", title: "Sign In", link: "/signin" },
+        { icon: "create", title: "Sign Up", link: "/signup" }
+      ];
+      return items;
     }
   },
   methods: {
     handleSignoutUser() {
-      this.$store.dispatch("signoutUser")
+      this.$store.dispatch("signoutUser");
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -140,7 +178,7 @@ h2 {
 }
 
 .fade-enter-active {
-  transition-delay: 0.25s
+  transition-delay: 0.25s;
 }
 
 .fade-enter,

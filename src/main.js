@@ -3,13 +3,28 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "./plugins/vuetify";
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { createUploadLink } from "apollo-upload-client";
-import { onError } from "apollo-link-error";
-import { ApolloLink, Observable } from "apollo-link";
-import { WebSocketLink } from "apollo-link-ws";
-import { getMainDefinition } from "apollo-utilities";
+import {
+  ApolloClient
+} from "apollo-client";
+import {
+  InMemoryCache
+} from "apollo-cache-inmemory";
+import {
+  createUploadLink
+} from "apollo-upload-client";
+import {
+  onError
+} from "apollo-link-error";
+import {
+  ApolloLink,
+  Observable
+} from "apollo-link";
+import {
+  WebSocketLink
+} from "apollo-link-ws";
+import {
+  getMainDefinition
+} from "apollo-utilities";
 import VueApollo from "vue-apollo";
 import Alert from "./components/Alert"
 
@@ -56,7 +71,10 @@ const requestLink = new ApolloLink((operation, forward) => {
 
 // websocket link for subscriptions
 const wsLink = ApolloLink.from([
-  onError(({ graphQLErrors, networkError }) => {
+  onError(({
+    graphQLErrors,
+    networkError
+  }) => {
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
         console.log(
@@ -66,6 +84,8 @@ const wsLink = ApolloLink.from([
         );
         if (err.name === "AuthenticationError") {
           console.log(err);
+          // set auth error in state
+          store.commit("setAuthError", err)
         }
       }
     }
@@ -94,12 +114,17 @@ const wsLink = ApolloLink.from([
 
 // HTTP link for queries and mutations
 const httpLink = ApolloLink.from([
-  onError(({ graphQLErrors, networkError }) => {
+  onError(({
+    graphQLErrors,
+    networkError
+  }) => {
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
         console.dir(err);
         if (err.name === "AuthenticationError") {
           console.log(err.name);
+          // set auth error in state
+          store.commit("setAuthError", err)
         }
       }
     }
@@ -119,8 +144,13 @@ const httpLink = ApolloLink.from([
 
 // Link to direct ws and http traffic to the correct place
 const link = ApolloLink.split(
-  ({ query }) => {
-    const { kind, operation } = getMainDefinition(query);
+  ({
+    query
+  }) => {
+    const {
+      kind,
+      operation
+    } = getMainDefinition(query);
     return kind === "OperationDefinition" && operation === "subscription";
   },
   wsLink,
@@ -142,5 +172,8 @@ new Vue({
   apolloProvider,
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  created() {
+    this.$store.dispatch("getCurrentUser")
+  }
 }).$mount("#app");
