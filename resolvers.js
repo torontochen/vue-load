@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
 
 // Create-token function
 const createToken = (user, secret, expiresIn) => {
@@ -32,6 +33,7 @@ module.exports = {
         })
       return pictures
     },
+
     getCurrentUser: async (_, args, {
       User,
       currentUser
@@ -70,6 +72,27 @@ module.exports = {
       const token = createToken(newUser, process.env.SECRET, "2hr")
       return {
         token
+      }
+    },
+
+    signinUser: async (_, {
+      username,
+      password
+    }, {
+      User
+    }) => {
+      const user = await User.findOne({
+        username
+      })
+      if (!user) {
+        throw new Error("User not found")
+      }
+      const isValidPassword = await bcrypt.compare(password, user.password)
+      if (!isValidPassword) {
+        throw new Error("Invalid Password")
+      }
+      return {
+        token: createToken(user, process.env.SECRET, "2hr")
       }
     }
   }

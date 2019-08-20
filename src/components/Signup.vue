@@ -177,6 +177,13 @@ export default {
   computed: {
     ...mapGetters(["loading", "error", "user"])
   },
+  watch: {
+    user(value) {
+      if(value) {
+        this.$router.push("/")
+      }
+    }
+   },
   methods: {
     handleSignupUser() {
       if (this.$refs.form.validate()) {
@@ -190,3 +197,42 @@ export default {
   }
 };
 </script>
+
+<style>
+  .custom-loader {
+    animation: loader 1s infinite;
+    display: flex;
+  }
+  @-moz-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @-o-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

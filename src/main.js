@@ -86,6 +86,8 @@ const wsLink = ApolloLink.from([
           console.log(err);
           // set auth error in state
           store.commit("setAuthError", err)
+          // Sign user out
+          store.dispatch("signoutUser")
         }
       }
     }
@@ -125,6 +127,8 @@ const httpLink = ApolloLink.from([
           console.log(err.name);
           // set auth error in state
           store.commit("setAuthError", err)
+          // Sign user out
+          store.dispatch("signoutUser")
         }
       }
     }

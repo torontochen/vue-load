@@ -36,7 +36,8 @@ export default new Vuex.Store({
     setAuthError: (state, payload) => {
       state.authError = payload
     },
-    clearError: state => (state.error = null)
+    clearError: state => (state.error = null),
+    clearUser: state => (state.user = null)
 
   },
   actions: {
@@ -58,7 +59,7 @@ export default new Vuex.Store({
               createdBy {
                 _id
                 username
-                avart
+                avatar
               }
             }
           }`
@@ -106,6 +107,44 @@ export default new Vuex.Store({
         })
     },
 
+    signinUser: ({
+      commit
+    }, payload) => {
+      commit("clearError")
+      commit("setLoading", true)
+      apolloClient
+        .mutate({
+          mutation: gql `
+            mutation($username: String!, $password: String!) {
+              signinUser(username: $username, password: $password) {
+                token
+              }
+            }`,
+          variables: payload
+        })
+        .then(({
+          data
+        }) => {
+          console.log(data)
+          commit("setLoading", false)
+          localStorage.setItem("token", data.signinUser.token)
+          router.go()
+        })
+        .catch(err => {
+          commit("setLoading", false)
+          commit("setError", err)
+        })
+    },
+
+    signoutUser: async ({
+      commit
+    }) => {
+      commit("clearUser")
+      localStorage.setItem("token", '')
+      await apolloClient.resetStore()
+      router.push('/')
+    },
+
     getCurrentUser: ({
       commit
     }) => {
@@ -119,7 +158,7 @@ export default new Vuex.Store({
               username
               email
               password
-              avart
+              avatar
               joinDate
             }
           }`

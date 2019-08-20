@@ -28,13 +28,19 @@
             :key="item.title"
             :to="item.link"
           >
-            <v-icon class="hidden-sm-only ma-1">{{item.icon}}</v-icon>
+            <v-icon
+              class="hidden-sm-only ma-1"
+              left
+            >{{item.icon}}</v-icon>
             {{item.title}}
           </v-btn>
         </v-layout>
         <v-layout v-else>
           <v-layout>
-            <v-btn>!Welcome ! {{user.name}}</v-btn>
+            <v-btn
+              class="primary lighten-1"
+              flat
+            >!Welcome {{user.username}}</v-btn>
           </v-layout>
           <v-layout>
             <v-btn
