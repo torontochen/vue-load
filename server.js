@@ -32,6 +32,7 @@ mongoose.connect(process.env.MONGO_URI, {
   .then(() => console.log('MongoDB is Connected'))
   .catch(err => console.error(err))
 
+
 // Verify JWT Token from client side
 const getUser = async token => {
   if (token) {

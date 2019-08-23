@@ -1,6 +1,13 @@
 const mongoose = require('mongoose')
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
+const fs = require("fs")
+
+mongoose.set('useFindAndModify', false)
+const conn = mongoose.connection
+
+// Upload file Dir
+const DOWNLOAD_DIR = './public/download'
 
 // Create-token function
 const createToken = (user, secret, expiresIn) => {
@@ -93,6 +100,38 @@ module.exports = {
       }
       return {
         token: createToken(user, process.env.SECRET, "2hr")
+      }
+    },
+
+    uploadImage: async (_, {
+      file,
+      username
+    }, info) => {
+      const {
+        createReadStream,
+        filename,
+        mimetype,
+        encoding
+      } = await file
+      const stream = createReadStream()
+      const gridFSBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: username
+      })
+      const newFilename = username + '-' + Date(Date.now()).toString() + '-' + filename
+      const uploadStream = gridFSBucket.openUploadStream(newFilename, {
+        chunkSizeBytes: 100000
+      })
+      await new Promise((resolve, reject) => {
+        stream
+          .pipe(uploadStream)
+          .on("error", reject)
+          .on("finish", resolve)
+      })
+      return {
+        id: uploadStream.id,
+        filename: newFilename,
+        mimetype,
+        encoding
       }
     }
   }

@@ -145,6 +145,31 @@ export default new Vuex.Store({
       router.push('/')
     },
 
+    uploadImage: ({
+      commit
+    }, payload) => {
+      apolloClient
+        .mutate({
+          mutation: gql `
+            mutation($file: Upload!, $username: String!) {
+              uploadImage(file: $file, username: $username) {
+                id
+                filename
+                mimetype
+              }
+            }`,
+          variables: payload
+        })
+        .then(({
+          data
+        }) => {
+          console.log(data)
+          commit("setImageFilename", data.uploadImage.filename)
+          commit("setImage", data.uploadImage)
+        })
+        .catch(err => console.log(err))
+    },
+
     getCurrentUser: ({
       commit
     }) => {
