@@ -17,10 +17,17 @@ export default new Vuex.Store({
     loading: false,
     authError: null,
     pics: [],
-
+    imageFilename: null,
+    image: null
 
   },
   mutations: {
+    setImage: (state, payload) => {
+      state.image = payload
+    },
+    setImageFilename: (state, payload) => {
+      state.imageFilename = payload
+    },
     setUser: (state, payload) => {
       state.user = payload
     },
@@ -41,6 +48,74 @@ export default new Vuex.Store({
 
   },
   actions: {
+    addPic: ({
+      commit
+    }, payload) => {
+      commit("setLoading", true)
+      apolloClient
+        .mutate({
+          mutation: gql `
+            mutation(
+              $title: String!
+              $imageId: ID
+              $imageFilename: String!
+              $imageBase64: String!
+              $creatorId: ID!
+            ) {
+              addPic(
+                title: $title
+                imageId: $imageId
+                imageFilename: $imageFilename
+                imageBase64: $imageBase64
+                creatorId: $creatorId
+              ) {
+                _id
+                title
+                imageId
+                imageBase64
+                imageFilename
+                createdDate
+                createdBy {
+                  _id
+                  username
+                  avatar
+                }
+              }
+            }`,
+          variables: payload,
+          awaitRefetchQueries: true,
+          // rerun getPics after performing the mutation in order to get the latest data
+          refetchQueries: [{
+            query: gql `
+           query {
+             getPics {
+               _id
+               title
+               imageId
+               imageBase64
+               imageFilename
+               createdDate
+               createdBy {
+                 _id
+                 username
+                 avatar
+               }
+             }
+           }`
+          }]
+        })
+        .then(({
+          data
+        }) => {
+          console.log(data)
+          commit("setLoading", false)
+          router.push("/")
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    },
+
     getPics: ({
       commit
     }) => {
@@ -204,6 +279,8 @@ export default new Vuex.Store({
     loading: state => state.loading,
     error: state => state.error,
     authError: state => state.authError,
-    pics: state => state.pics
+    pics: state => state.pics,
+    image: state => state.image,
+    imageFilename: state => state.imageFilename
   }
 })

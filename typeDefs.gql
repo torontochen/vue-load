@@ -11,9 +11,9 @@ type Pic {
   _id: ID!
   title: String!
   imageId: ID
-  ImageBase64: String!
+  imageBase64: String!
   imageFilename: String!
-  createdBy: User!
+  createdBy: User
   createdDate: String
 }
 
@@ -45,7 +45,7 @@ type Mutation {
     imageId: ID
     imageFilename: String!
     creatorId: ID!
-    ImageBase64: String!
+    imageBase64: String!
   ): Pic!
   uploadImage(file: Upload!, username: String!): File
 }

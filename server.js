@@ -24,6 +24,8 @@ require('dotenv').config({
 const User = require('./models/User')
 const Picture = require('./models/Picture')
 
+
+
 // Connect to mongodb databse
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

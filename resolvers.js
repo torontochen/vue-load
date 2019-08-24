@@ -58,6 +58,33 @@ module.exports = {
 
   // Mutations
   Mutation: {
+    addPic: async (_, {
+      title,
+      imageId,
+      imageFilename,
+      creatorId,
+      imageBase64
+    }, {
+      Picture
+    }) => {
+      await new Picture({
+        title,
+        imageId,
+        imageFilename,
+        createdBy: creatorId,
+        imageBase64
+      }).save()
+      const addedPic = await Picture.findOne({
+        imageFilename
+      }).populate({
+        path: "createdBy",
+        model: "User"
+      })
+
+
+      return addedPic
+    },
+
     signupUser: async (_, {
       username,
       email,

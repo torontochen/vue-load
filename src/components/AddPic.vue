@@ -28,7 +28,12 @@
         sm6
         offset-sm3
       >
-        <v-form>
+        <v-form
+          v-model="isFormValid"
+          lazy-validation
+          ref="form"
+          @submit.prevent="handleAddPic"
+        >
           <!-- title input -->
           <v-layout row>
             <v-flex xs12>
@@ -123,8 +128,14 @@ export default {
 
   methods: {
     handleAddPic() {
-      if (this.$refs.form.vlaide()) {
-        this.$store.dispatch("addpic");
+      if (this.$refs.form.validate()) {
+        this.$store.dispatch("addPic", {
+          title: this.title,
+          imageFilename: this.imageFilename,
+          imageBase64: this.imageUrl,
+          imageId: this.image.id,
+          creatorId: this.user._id
+        });
       }
     },
 
