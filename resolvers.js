@@ -85,6 +85,29 @@ module.exports = {
       return addedPic
     },
 
+    deletePic: async (_, {
+      picId,
+      username
+    }, {
+      Picture
+    }) => {
+      const gridFSBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: username
+      })
+      const deletePic = await Picture.findOne({
+        _id: picId
+      }).populate({
+        path: 'createdBy',
+        model: "User"
+      })
+      await gridFSBucket.delete(deletePic.imageId)
+
+      const pic = Picture.findOneAndRemove({
+        _id: picId
+      })
+      return pic
+    },
+
     signupUser: async (_, {
       username,
       email,
@@ -160,6 +183,43 @@ module.exports = {
         mimetype,
         encoding
       }
+    },
+
+    downloadImage: async (_, {
+      filename,
+      username
+    }, info) => {
+      const firstDash = filename.indexOf('-')
+      const bucketName = filename.slice(0, firstDash)
+      const gridFSBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName
+      })
+      const newFilename = filename => {
+        const posLast = filename.lastIndexOf('-')
+        const file = filename.slice(posLast + 1)
+        const newfilename = username + '-' + file
+        return newfilename
+      }
+      const downloadPath = `${DOWNLOAD_DIR}/${newFilename(filename)}`
+      const downloadStream = gridFSBucket.openDownloadStreamByName(filename)
+
+      setTimeout(() => {
+        downloadStream
+          .pipe(fs.createWriteStream(downloadPath))
+          .on("error", error => {
+            console.log("Some error occured in download:" + error)
+          })
+          .on("finish", () => {
+            console.log("download is finished")
+          })
+      }, 500)
+
+
+      return {
+        fileDir: newFilename(filename)
+      }
+
+
     }
   }
 

@@ -80,7 +80,10 @@ const corsOptions = {
 
 server.applyMiddleware({
   app,
-  cors: corsOptions
+  cors: corsOptions,
+  bodyParserConfig: {
+    limit: "50mb"
+  }
 })
 
 // Set up Subscription Handlers

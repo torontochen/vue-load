@@ -18,10 +18,14 @@ export default new Vuex.Store({
     authError: null,
     pics: [],
     imageFilename: null,
-    image: null
+    image: null,
+    downloadImagePath: null
 
   },
   mutations: {
+    setDownloadImagePath: (state, payload) => {
+      state.downloadImagePath = payload
+    },
     setImage: (state, payload) => {
       state.image = payload
     },
@@ -116,10 +120,46 @@ export default new Vuex.Store({
         })
     },
 
+    deletePic: ({}, payload) => {
+      apolloClient
+        .mutate({
+          mutation: gql `
+            mutation($picId: ID!, $username: String!) {
+              deletePic(picId: $picId, username: $username) {
+                _id
+              }
+            }`,
+          variables: payload,
+          awaitRefetchQueries: true,
+          // rerun getPics after performing the mutation in order to get the latest data
+          refetchQueries: [{
+            query: gql `
+             query {
+               getPics {
+                 _id
+                 title
+                 imageId
+                 imageBase64
+                 imageFilename
+                 createdDate
+                 createdBy {
+                   _id
+                   username
+                   avatar
+                 }
+               }
+             }`
+          }]
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+
     getPics: ({
       commit
     }) => {
-      commit("setloading", true)
+      commit("setLoading", true)
       apolloClient
         .query({
           query: gql `
@@ -245,6 +285,29 @@ export default new Vuex.Store({
         .catch(err => console.log(err))
     },
 
+    downloadImage: ({
+      commit
+    }, payload) => {
+      apolloClient
+        .mutate({
+          mutation: gql `
+          mutation($filename: String!, $username: String!) {
+            downloadImage(filename: $filename, username: $username) {
+              fileDir
+            }
+          }`,
+          variables: payload
+        })
+        .then(({
+          data
+        }) => {
+          commit("setDownloadImagePath", data.downloadImage.fileDir)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+
     getCurrentUser: ({
       commit
     }) => {
@@ -281,6 +344,7 @@ export default new Vuex.Store({
     authError: state => state.authError,
     pics: state => state.pics,
     image: state => state.image,
-    imageFilename: state => state.imageFilename
+    imageFilename: state => state.imageFilename,
+    downloadImagePath: state => state.downloadImagePath
   }
 })

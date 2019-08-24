@@ -47,5 +47,7 @@ type Mutation {
     creatorId: ID!
     imageBase64: String!
   ): Pic!
+  deletePic(picId: ID!, username: String!): Pic
   uploadImage(file: Upload!, username: String!): File
+  downloadImage(filename: String!, username: String!): FileDir!
 }

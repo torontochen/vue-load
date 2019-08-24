@@ -3,6 +3,29 @@
     fluid
     grid-list-md
   >
+    <!-- Loading Spinner -->
+    <v-layout row>
+      <v-dialog
+        v-model="loading"
+        persistent
+        fullscreen
+      >
+        <v-container fill-height>
+          <v-layout
+            row
+            justify-center
+            align-center
+          >
+            <v-progress-circular
+              indeterminate
+              :size="70"
+              :width="7"
+              color="secondary"
+            ></v-progress-circular>
+          </v-layout>
+        </v-container>
+      </v-dialog>
+    </v-layout>
     <!-- Pic Card -->
     <v-layout
       row
@@ -40,7 +63,7 @@
               small
               dark
               v-if="user && user.username !== pic.createdBy.username"
-              @click="downloadImage(pic.imageFileName)"
+              @click="downloadImage(pic.imageFilename)"
             >
               <v-icon>file_download</v-icon>
             </v-btn>
@@ -105,7 +128,7 @@
             <h5>File Is Ready to download, Click Link Below</h5>
           </v-card-title>
           <p class="text-xs-center text-md-center mb-4"><a
-              v-if="downloadImagepath"
+              v-if="downloadImagePath"
               target="_blank"
               v-bind:href="'download/'+downloadImagePath"
               @click.stop="downloadDialog=false"
@@ -135,16 +158,33 @@ export default {
   computed: {
     ...mapGetters(["user", "pics", "downloadImagePath", "loading"])
   },
+  watch: {
+    downloadImagePath(value) {
+      return (this.downloadDialog = true);
+    }
+  },
   methods: {
     handleGetALLPics() {
       this.$store.dispatch("getPics");
     },
-    handleDeletePics() {},
+    handleDeletePic(picId, imageId) {
+      this.$store.dispatch("deletePic", {
+        picId,
+        username: this.user.username,
+        imageId
+      });
+    },
     formatCreatedDate(date) {
       return moment(new Date(date)).format("ll");
     },
     downloadImage(imageFilename) {
-      this.$store.dispatch();
+      this.$store.dispatch("downloadImage", {
+        filename: imageFilename,
+        username: this.user.username
+      });
+      if (this.downloadImagePath) {
+        return (this.downloadDialog = true);
+      }
     }
   }
 };
