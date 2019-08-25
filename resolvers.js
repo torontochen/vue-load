@@ -65,7 +65,8 @@ module.exports = {
       creatorId,
       imageBase64
     }, {
-      Picture
+      Picture,
+      pubsub
     }) => {
       await new Picture({
         title,
@@ -74,6 +75,8 @@ module.exports = {
         createdBy: creatorId,
         imageBase64
       }).save()
+
+
       const addedPic = await Picture.findOne({
         imageFilename
       }).populate({
@@ -81,6 +84,10 @@ module.exports = {
         model: "User"
       })
 
+      // Broadcast the subscription
+      pubsub.publish("PIC_ADDED", {
+        picAdded: addedPic
+      })
 
       return addedPic
     },
@@ -89,7 +96,8 @@ module.exports = {
       picId,
       username
     }, {
-      Picture
+      Picture,
+      pubsub
     }) => {
       const gridFSBucket = new mongoose.mongo.GridFSBucket(conn.db, {
         bucketName: username
@@ -101,6 +109,11 @@ module.exports = {
         model: "User"
       })
       await gridFSBucket.delete(deletePic.imageId)
+
+      // Publish subscription
+      pubsub.publish("PIC_DELETED", {
+        picDeleted: deletePic
+      })
 
       const pic = Picture.findOneAndRemove({
         _id: picId
@@ -221,8 +234,27 @@ module.exports = {
 
 
     }
-  }
+  },
 
 
   // Subscriptions
+  Subscription: {
+    picAdded: {
+      subscribe: (_, args, {
+        pubsub
+      }) => {
+        console.log("picAdded subscription is running")
+        return pubsub.asyncIterator(["PIC_ADDED"])
+      }
+    },
+
+    picDeleted: {
+      subscribe: (_, args, {
+        pubsub
+      }) => {
+        console.log("picDeleted subscription is running")
+        return pubsub.asyncIterator(["PIC_DELETED"])
+      }
+    }
+  }
 }

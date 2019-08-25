@@ -51,3 +51,8 @@ type Mutation {
   uploadImage(file: Upload!, username: String!): File
   downloadImage(filename: String!, username: String!): FileDir!
 }
+
+type Subscription {
+  picAdded: Pic!
+  picDeleted: Pic!
+}

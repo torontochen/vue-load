@@ -143,6 +143,7 @@
 
 <script>
 import moment from "moment";
+import { gql } from "apollo-boost";
 import { mapGetters } from "vuex";
 
 export default {
@@ -154,6 +155,70 @@ export default {
   },
   created() {
     this.handleGetALLPics();
+  },
+  apollo: {
+    $subscribe: {
+      picAdded: {
+        query: gql`
+          subscription {
+            picAdded {
+              _id
+              title
+              imageId
+              imageFilename
+              imageBase64
+              createdDate
+              createdBy {
+                _id
+                username
+                avatar
+              }
+            }
+          }
+        `,
+        result({ data }) {
+          console.log(data.picAdded);
+          if (this.pics) {
+            this.pics.unshift(data.picAdded);
+          }
+          this.$store.commit("setPics", this.pics);
+        }
+      },
+      picDeleted: {
+        query: gql`
+          subscription {
+            picDeleted {
+              _id
+              title
+              imageId
+              imageFilename
+              imageBase64
+              createdDate
+              createdBy {
+                _id
+                username
+                avatar
+              }
+            }
+          }
+        `,
+        result({ data }) {
+          console.log(data.picDeleted);
+          if (this.pics) {
+            const index = this.pics.findIndex(
+              pic => pic._id == data.picDeleted._id
+            );
+            if (index >= 0) {
+              const pics = [
+                ...this.pics.slice(0, index),
+                ...this.pics.slice(index + 1)
+              ];
+              this.$store.commit("setPics", pics);
+            }
+          }
+        }
+      }
+    }
   },
   computed: {
     ...mapGetters(["user", "pics", "downloadImagePath", "loading"])

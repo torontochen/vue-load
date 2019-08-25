@@ -2,12 +2,14 @@ const express = require('express')
 const http = require('http')
 const {
   ApolloServer,
-  AuthenticationError
+  AuthenticationError,
+  PubSub
 } = require('apollo-server-express')
 const mongoose = require('mongoose')
 const fs = require('fs')
 const path = require('path')
 const jwt = require('jsonwebtoken')
+const pubsub = new PubSub()
 
 const app = express()
 const PORT = process.env.PORT || 4000
@@ -67,7 +69,8 @@ const server = new ApolloServer({
     return {
       User,
       Picture,
-      currentUser: await getUser(token)
+      currentUser: await getUser(token),
+      pubsub
     }
   }
 })
