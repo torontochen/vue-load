@@ -40,7 +40,7 @@
             <v-btn
               class="primary lighten-1"
               flat
-            >!Welcome {{user.username}}</v-btn>
+            >Welcome!  {{user.username}}</v-btn>
           </v-layout>
           <v-layout>
             <v-btn

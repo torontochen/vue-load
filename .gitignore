@@ -1,7 +1,7 @@
 .DS_Store
 variables.env
 node_modules
-/dist
+# /dist
 /public/download
 
 # local env files

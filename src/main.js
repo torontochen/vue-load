@@ -99,7 +99,8 @@ const wsLink = ApolloLink.from([
   requestLink,
 
   new WebSocketLink({
-    uri: `ws://localhost:4000/graphql`,
+    uri: `wss://vueload.herokuapp.com/graphql`,
+    // uri: `ws://localhost:4000/graphql`,
     options: {
       reconnect: true,
       connectionParams: () => {
@@ -141,7 +142,8 @@ const httpLink = ApolloLink.from([
 
   // Create file upload link
   new createUploadLink({
-    uri: `http://localhost:4000/graphql`,
+    uri: `https://vueload.herokuapp.com/graphql`,
+    // uri: `http://localhost:4000/graphql`,
     credentials: "include"
   })
 ]);

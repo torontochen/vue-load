@@ -14,6 +14,17 @@ const pubsub = new PubSub()
 const app = express()
 const PORT = process.env.PORT || 4000
 
+// Designate the download folder
+app.use("/download", express.static("download"))
+
+// Desigante the /dist as static files
+app.use(express.static(__dirname + "/dist/"))
+
+// Specify the fold of index.html
+app.get(/.*/, function (req, res) {
+  res.sendFile(__dirname + "/dist/index.html")
+})
+
 // Import typeDefs and resolvers
 const filePath = path.join(__dirname, 'typeDefs.gql')
 const typeDefs = fs.readFileSync(filePath, 'utf-8')
@@ -76,14 +87,14 @@ const server = new ApolloServer({
 })
 
 // Set up Cors
-const corsOptions = {
-  credentials: true,
-  origin: 'http://localhost:8080'
-}
+// const corsOptions = {
+//   credentials: true,
+//   origin: 'http://localhost:8080'
+// }
 
 server.applyMiddleware({
   app,
-  cors: corsOptions,
+  // cors: corsOptions,
   bodyParserConfig: {
     limit: "50mb"
   }
@@ -94,6 +105,6 @@ const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
 httpServer.listen(PORT, () => {
-  console.log(`Server ready at http://local:${PORT}${server.graphqlPath}`)
-  console.log(`Subscription ready at ws://localhost:${PORT}${server.subscriptionsPath}`)
+  console.log(`Server ready at https://vueload.herokuapp.com:${PORT}${server.graphqlPath}`)
+  console.log(`Subscription ready at wss://vueload.herokuapp.com:${PORT}${server.subscriptionsPath}`)
 })
