@@ -2,7 +2,7 @@
 variables.env
 node_modules
 # /dist
-# /public/download
+/public
 
 # local env files
 .env.local
