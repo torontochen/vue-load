@@ -7,7 +7,7 @@ mongoose.set('useFindAndModify', false)
 const conn = mongoose.connection
 
 // Upload file Dir
-const DOWNLOAD_DIR = "./download"
+const DOWNLOAD_DIR = "download"
 
 // Create-token function
 const createToken = (user, secret, expiresIn) => {
