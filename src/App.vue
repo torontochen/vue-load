@@ -144,7 +144,6 @@ export default {
     authError(value) {
       if (value !== null) {
         this.authErrorSnackbar = true;
-        setTimeout(() => (this.badgeAnimated = false), 1000);
       }
     }
   },
