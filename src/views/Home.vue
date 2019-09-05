@@ -94,7 +94,7 @@
                 <v-list-tile-title class="text--primary">
                   {{pic.createdBy.username}}
                 </v-list-tile-title>
-                <v-list-tile-sub-title class="font-weight-this">
+                <v-list-tile-sub-title class="font-weight-thin">
                   Added {{formatCreatedDate(pic.createdDate)}}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
