@@ -152,7 +152,7 @@ export default {
         return alert("Please add a valid file");
       }
       if (
-        files[0].type === "image/jpg" ||
+        files[0].type === "image/jpeg" ||
         "image/png" ||
         "image/jpg" ||
         "image/gif"
