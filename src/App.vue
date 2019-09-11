@@ -29,7 +29,7 @@
             :to="item.link"
           >
             <v-icon
-              class="hidden-sm-only ma-1"
+              class="hidden-sm-and-down ma-1"
               left
             >{{item.icon}}</v-icon>
             {{item.title}}
@@ -50,7 +50,7 @@
             >
               <v-icon
                 left
-                class="hidden-sm-only ma-1"
+                class="hidden-sm-and-down ma-1"
               >attachment</v-icon>
               Add Picture
             </v-btn>
@@ -63,7 +63,7 @@
             >
               <v-icon
                 left
-                class="hidden-sm-only ma-1"
+                class="hidden-sm-and-down ma-1"
               >exit_to_app</v-icon>
               Signout
             </v-btn>
